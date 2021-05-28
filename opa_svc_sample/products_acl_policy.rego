@@ -1,4 +1,4 @@
-package products.policy
+package products_acl.policy
 
 import data.products_acl
 
