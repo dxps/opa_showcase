@@ -1,20 +1,13 @@
-package products_acl.policy
+package products.policy
 
-import data.products_acl
+import data.products.acl
 
 # By default, deny requests.
-default allow = false
+default user_has_product = false
 
-allow {
-	user_has_product
-}
-
-# Tell if the user (from `input.user`) has the provided `product`.
+# Tell if the user (as `input.user`) has the product (as `input.product`).
 user_has_product {
-	user_prods := products_acl[input.user]
+	user_prods := acl[input.user]
 
-	some i
-
-	# product is the `i`-th element in the user->products mappings for the provided user.
-	user_prods[i] == input.product
+	user_prods[_] == input.product
 }

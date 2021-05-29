@@ -1,27 +1,28 @@
 ## Using OPA as a standalone/sidecar service
 
-OPA can run in server mode and following the sidecar pattern it can be used for:
+OPA can run in server mode. And following the sidecar pattern it can be used for:
 
-- uploading 1-N x `Policy` (one or multiple policies)
+- uploading 1..N x `Policy` (one or multiple policies)
 - feeding in `Data`
   - representing facts about external world (attributes of users, request/action, or target)
 - doing a `Query Input` for getting authorization decisions
 
 ```
-  policies & data mgmt         authorization decisions
- ----------------------       -------------------------
+      policies & data mgmt                 authorization decisions
+  ----------------------------           ---------------------------
 
-      .--------.
-      | Policy |----------.
-      '--------'          |
-                          v
-                     .---------.          .---------.
-                     |   OPA   |<---------|  Query  |
-                     '---------'          '---------'
-                          ^
-      .--------.          |
-      |  Data  |----------'
-      '--------'
+
+   .--------.    /policies/products
+   | Policy |----------------------.
+   '--------'                      |
+                                   v
+                              .---------.           .-------------.
+                              |   OPA   |<----------| Query Input |
+                              '---------'           '-------------'
+                                   ^
+   .--------.                      |
+   |  Data  |----------------------'
+   '--------'    /data/products/acl
 ```
 
 ### Usage
@@ -30,10 +31,25 @@ Follow these steps:
 
 1. Start OPA in server mode.
 
-- Use `opa run --server` or the provided `run_opa.sh` script.
-- It will listen on port `8181` for HTTP requests.
+   - Use `./run_opa.sh` script or run `opa run --server`.
+   - It will listen on port `8181` for HTTP requests.
 
-1. Upload a `Policy`.
+1. Upload the `Policy`.
 
-- Use `curl -X PUT localhost:8181/v1/data/products-acl -d @products-acl_data.json`<br>
-  or the provided `upload_data.sh` script.
+   - Use `./upload_policy.sh` script or run:<br/>
+     `curl -X PUT localhost:8181/v1/policies/products --data-binary @products_acl_policy.rego`e
+
+1. Upload the `Data`.
+
+   - Use `./upload_data.sh` script or run:<br/>
+     `curl -X PUT localhost:8181/v1/data/products/acl --data-binary @products_acl.json`
+
+1. `Query Input` for authorization decisions.
+
+   - Use `./query_authz.sh` script or run:<br/>
+     `curl -X POST localhost:8181/v1/data/products/policy/user_has_product --data-binary @query_input.json`<br/>
+     and the response must be:<br/>
+     `{"result":true}`
+
+Of course, you can play with different values in `query_input` and run `./query_authz.sh` again to see the effect,<br/>
+such as specifying `user_2` (which according to the uploaded `data` he doesn't have access to `product_2`).
