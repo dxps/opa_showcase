@@ -37,7 +37,7 @@ Follow these steps:
 1. Upload the `Policy`.
 
    - Use `./upload_policy.sh` script or run:<br/>
-     `curl -X PUT localhost:8181/v1/policies/products --data-binary @products_acl_policy.rego`e
+     `curl -X PUT localhost:8181/v1/policies/products --data-binary @products_policy.rego`
 
 1. Upload the `Data`.
 
