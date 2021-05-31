@@ -5,20 +5,20 @@ OPA can run in server mode. And following the sidecar pattern it can be used for
 - uploading 1..N x `Policy` (one or multiple policies)
 - feeding in `Data`
   - representing facts about external world (attributes of users, request/action, or target)
-- doing a `Query Input` for getting authorization decisions
+- doing a `Query` for getting authorization decisions
 
 ```
-      policies & data mgmt                 authorization decisions
-  ----------------------------           ---------------------------
+      policies & data mgmt                authorization decisions
+  ----------------------------           -------------------------
 
 
    .--------.    /policies/products
    | Policy |----------------------.
    '--------'                      |
                                    v
-                              .---------.           .-------------.
-                              |   OPA   |<----------| Query Input |
-                              '---------'           '-------------'
+                              .---------.           .-------.
+                              |   OPA   |<----------| Query |
+                              '---------'           '-------'
                                    ^
    .--------.                      |
    |  Data  |----------------------'
