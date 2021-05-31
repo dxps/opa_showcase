@@ -44,7 +44,7 @@ Follow these steps:
    - Use `./upload_data.sh` script or run:<br/>
      `curl -X PUT localhost:8181/v1/data/products/acl --data-binary @products_acl.json`
 
-1. `Query Input` for authorization decisions.
+1. `Query` for authorization decisions.
 
    - Use `./query_authz.sh` script or run:<br/>
      `curl -X POST localhost:8181/v1/data/products/policy/user_has_product --data-binary @query_input.json`<br/>
