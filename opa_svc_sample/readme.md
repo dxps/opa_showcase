@@ -5,20 +5,20 @@ OPA can run in server mode. And following the sidecar pattern it can be used for
 - uploading 1..N x `Policy` (one or multiple policies)
 - feeding in `Data`
   - representing facts about external world (attributes of users, request/action, or target)
-- doing a `Query Input` for getting authorization decisions
+- doing a `Query` for getting authorization decisions
 
 ```
-      policies & data mgmt                 authorization decisions
-  ----------------------------           ---------------------------
+      policies & data mgmt                authorization decisions
+  ----------------------------           -------------------------
 
 
    .--------.    /policies/products
    | Policy |----------------------.
    '--------'                      |
                                    v
-                              .---------.           .-------------.
-                              |   OPA   |<----------| Query Input |
-                              '---------'           '-------------'
+                              .---------.           .-------.
+                              |   OPA   |<----------| Query |
+                              '---------'           '-------'
                                    ^
    .--------.                      |
    |  Data  |----------------------'
@@ -44,7 +44,7 @@ Follow these steps:
    - Use `./upload_data.sh` script or run:<br/>
      `curl -X PUT localhost:8181/v1/data/products/acl --data-binary @products_acl.json`
 
-1. `Query Input` for authorization decisions.
+1. `Query` for authorization decisions.
 
    - Use `./query_authz.sh` script or run:<br/>
      `curl -X POST localhost:8181/v1/data/products/policy/user_has_product --data-binary @query_input.json`<br/>
