@@ -21,7 +21,7 @@ func main() {
 
 	// Defining the CLI flags and their default values, plus parsing the startup call.
 	flag.IntVar(&cfg.Port, "port", 3001, "HTTP Listening Port of the API Server")
-	flag.StringVar(&cfg.Env, "env", "dev", "Environment stage (dev|qa|prod)")
+	flag.StringVar(&cfg.EnvStage, "env", "DEV", "Environment stage (DEV|QA|PROD)")
 	flag.Parse()
 
 	// Logger init. Sending the entries to standard output.
@@ -48,7 +48,7 @@ func main() {
 		WriteTimeout: 30 * time.Second,
 	}
 
-	logger.Printf("Starting listening on %s", srv.Addr)
+	logger.Printf("Listening for HTTP requests on port %s", srv.Addr)
 	err := srv.ListenAndServe()
 	logger.Fatal(err)
 
