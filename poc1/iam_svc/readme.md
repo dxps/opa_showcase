@@ -2,6 +2,14 @@
 
 This is the Identity and Access Management (IAM) service, playing the authentication server role, thus being responsible with authenticating users and returing JWTs containing claims with relevant details.
 
+<br/>
+
+### Prereqs
+
+- [migrate](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate) tool for running the SQL migrations
+
+<br/>
+
 ### Run
 
 Use the standard `go run ./cmd/main.go` approach. <br/>

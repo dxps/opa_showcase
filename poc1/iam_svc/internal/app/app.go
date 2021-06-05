@@ -31,6 +31,11 @@ func (app *App) Init() error {
 	return nil
 }
 
+func (app *App) Uninit() {
+	app.Logger.Print("Releasing db connections ...")
+	app.DB.Close()
+}
+
 func (app *App) openDB() (*sql.DB, error) {
 
 	// Create an empty connection pool.
@@ -38,6 +43,14 @@ func (app *App) openDB() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	db.SetMaxOpenConns(app.Config.Db.MaxOpenConns)
+	db.SetMaxIdleConns(app.Config.Db.MaxIdleConns)
+	duration, err := time.ParseDuration(app.Config.Db.MaxIdleTime)
+	if err != nil {
+		return nil, err
+	}
+	db.SetConnMaxIdleTime(duration)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

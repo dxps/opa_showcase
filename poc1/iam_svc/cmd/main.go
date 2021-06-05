@@ -25,6 +25,9 @@ func main() {
 	flag.IntVar(&cfg.Port, "port", 3001, "HTTP Listening Port of the API Server")
 	flag.StringVar(&cfg.EnvStage, "env", "DEV", "Environment stage (DEV|QA|PROD)")
 	flag.StringVar(&cfg.Db.DSN, "db-dsn", os.Getenv("DB_DSN"), "PostgreSQL DSN")
+	flag.IntVar(&cfg.Db.MaxOpenConns, "db-max-open-conns", 25, "PostgreSQL max open connections")
+	flag.IntVar(&cfg.Db.MaxIdleConns, "db-max-idle-conns", 5, "PostgreSQL max idle connections")
+	flag.StringVar(&cfg.Db.MaxIdleTime, "db-max-idle-time", "15m", "PostgreSQL max connection idle time")
 	flag.Parse()
 
 	// Logger init: sending the entries to standard output.
@@ -35,6 +38,7 @@ func main() {
 	if err := app.Init(); err != nil {
 		logger.Fatal(err)
 	}
+	defer app.Uninit()
 
 	api := api.NewAPI(cfg, logger, APP_VERSION)
 
