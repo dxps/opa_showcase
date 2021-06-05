@@ -16,7 +16,7 @@ type envelope map[string]interface{}
 
 func (api *API) writeJSON(w http.ResponseWriter, status int, data envelope, headers http.Header) error {
 
-	js, err := json.MarshalIndent(data, "", "\t")
+	js, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
@@ -29,11 +29,12 @@ func (api *API) writeJSON(w http.ResponseWriter, status int, data envelope, head
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	w.Write(js)
+	_, _ = w.Write(js)
 
 	return nil
 }
 
+// readIDParam reads the `id` as the URL Path Parameter and converts it to a 64bit integer.
 func (api *API) readIDParam(r *http.Request) (int64, error) {
 	params := httprouter.ParamsFromContext(r.Context())
 

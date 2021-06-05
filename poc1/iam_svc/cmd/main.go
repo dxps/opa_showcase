@@ -8,8 +8,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/dxps/opa_showcase/iam_svc/internal/api"
-	"github.com/dxps/opa_showcase/iam_svc/internal/app"
+	_ "github.com/lib/pq"
+
+	"github.com/dxps/opa_showcase/poc1/iam_svc/internal/api"
+	"github.com/dxps/opa_showcase/poc1/iam_svc/internal/app"
 )
 
 // App version. At build time, it gets a different value.
@@ -22,16 +24,16 @@ func main() {
 	// Defining the CLI flags and their default values, plus parsing the startup call.
 	flag.IntVar(&cfg.Port, "port", 3001, "HTTP Listening Port of the API Server")
 	flag.StringVar(&cfg.EnvStage, "env", "DEV", "Environment stage (DEV|QA|PROD)")
+	flag.StringVar(&cfg.Db.DSN, "db-dsn", os.Getenv("DB_DSN"), "PostgreSQL DSN")
 	flag.Parse()
 
-	// Logger init. Sending the entries to standard output.
+	// Logger init: sending the entries to standard output.
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
-	// The app init.
-	app := app.App{
-		Config:  cfg,
-		Logger:  logger,
-		Version: APP_VERSION,
+	app := app.New(cfg, logger, APP_VERSION)
+
+	if err := app.Init(); err != nil {
+		logger.Fatal(err)
 	}
 
 	api := api.NewAPI(cfg, logger, APP_VERSION)

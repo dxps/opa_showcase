@@ -8,4 +8,7 @@
 ## - and have $HOME/go (or whether your GOPATH is defined) in your PATH
 ## --------------------------------------------------------------------
 
+export DB_DSN="postgres://iam:iam@localhost:5433/iam?sslmode=disable"
+
 reflex -r '\.go' -s -- sh -c "go run ./cmd/main.go"
+

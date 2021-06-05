@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/dxps/opa_showcase/iam_svc/internal/app"
+	"github.com/dxps/opa_showcase/poc1/iam_svc/internal/app"
 	"github.com/julienschmidt/httprouter"
 )
 
