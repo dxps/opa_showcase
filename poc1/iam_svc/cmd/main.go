@@ -12,6 +12,7 @@ import (
 
 	"github.com/dxps/opa_showcase/poc1/iam_svc/internal/api"
 	"github.com/dxps/opa_showcase/poc1/iam_svc/internal/app"
+	"github.com/dxps/opa_showcase/poc1/iam_svc/internal/infra/repos"
 )
 
 // App version. At build time, it gets a different value.
@@ -40,7 +41,9 @@ func main() {
 	}
 	defer app.Uninit()
 
-	api := api.NewAPI(cfg, logger, APP_VERSION)
+	repos := repos.New(app.DB)
+
+	api := api.NewAPI(cfg, logger, APP_VERSION, repos)
 
 	srv := http.Server{
 		Addr:         fmt.Sprintf(":%d", app.Config.Port),

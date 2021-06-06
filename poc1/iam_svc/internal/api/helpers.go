@@ -14,7 +14,7 @@ import (
 
 type envelope map[string]interface{}
 
-func (api *API) writeJSON(w http.ResponseWriter, status int, data envelope, headers http.Header) error {
+func (api *API) writeJSON(w http.ResponseWriter, status int, data interface{} /* envelope,*/, headers http.Header) error {
 
 	js, err := json.Marshal(data)
 	if err != nil {
