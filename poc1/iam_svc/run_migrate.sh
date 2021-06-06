@@ -2,7 +2,7 @@
 
 usage() {
   echo 
-  echo " Error: Provide the database migration version (an integer like 1, 2, ...) as argument."
+  echo " Error: No migration version provided."
   echo " Usage:"
   echo "   - Go to a specific version using ./run_migrate.sh {version}"
   echo "   - Force (after fixing errors) to specific version using ./run_migrate.sh {version} force"

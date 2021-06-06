@@ -52,9 +52,10 @@ func (api *API) RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
 		default:
 			api.serverErrorResponse(w, r, err)
 		}
+		return
 	}
 
-	err = api.writeJSON(w, http.StatusCreated, envelope{}, nil)
+	err = api.writeJSON(w, http.StatusCreated, subj, nil)
 	if err != nil {
 		api.serverErrorResponse(w, r, err)
 	}

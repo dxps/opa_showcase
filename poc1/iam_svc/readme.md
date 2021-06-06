@@ -20,3 +20,8 @@ For this, make sure you have `reflex` tool installed:
 
 - by running `go get github.com/cespare/reflex` outside of this (any any other nowadays Go Modules based) project directory
 - and have `$HOME/go/bin` in your `PATH`
+
+### Usage
+
+Registering a user:
+`curl -i -d '{ "name":"John", "email":"john@doe.com", "password":"pass1234" }' localhost:3001/v1/subjects`
