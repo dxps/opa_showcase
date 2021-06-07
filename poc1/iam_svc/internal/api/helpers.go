@@ -6,15 +6,20 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strconv"
 	"strings"
 
+	"github.com/gofrs/uuid"
 	"github.com/julienschmidt/httprouter"
 )
 
 type envelope map[string]interface{}
 
-func (api *API) writeJSON(w http.ResponseWriter, status int, data interface{} /* envelope,*/, headers http.Header) error {
+func (api *API) respondStatus(w http.ResponseWriter, status int) {
+
+	w.WriteHeader(status)
+}
+
+func (api *API) writeJSON(w http.ResponseWriter, status int, data interface{}, headers http.Header) error {
 
 	js, err := json.Marshal(data)
 	if err != nil {
@@ -35,15 +40,15 @@ func (api *API) writeJSON(w http.ResponseWriter, status int, data interface{} /*
 }
 
 // readIDParam reads the `id` as the URL Path Parameter and converts it to a 64bit integer.
-func (api *API) readIDParam(r *http.Request) (int64, error) {
-	params := httprouter.ParamsFromContext(r.Context())
+func (api *API) readUUIDParam(r *http.Request) (*uuid.UUID, error) {
 
-	id, err := strconv.ParseInt(params.ByName("id"), 10, 64)
-	if err != nil || id < 1 {
-		return 0, errors.New("invalid id parameter")
+	params := httprouter.ParamsFromContext(r.Context())
+	uid, err := uuid.FromString(params.ByName("id"))
+	if err != nil {
+		return nil, errors.New("invalid id parameter")
 	}
 
-	return id, nil
+	return &uid, nil
 }
 
 func (api *API) readJSON(w http.ResponseWriter, r *http.Request, dst interface{}) error {

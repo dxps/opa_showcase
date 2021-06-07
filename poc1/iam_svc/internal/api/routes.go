@@ -17,6 +17,8 @@ func (api *API) Routes() *httprouter.Router {
 	router.HandlerFunc(http.MethodGet, "/v1/healthcheck", api.HealthcheckHandler)
 
 	router.HandlerFunc(http.MethodPost, "/v1/subjects", api.RegisterUserHandler)
+	router.HandlerFunc(http.MethodGet, "/v1/subjects/:id/attributes", api.getSubjectAttributesHandler)
+	router.HandlerFunc(http.MethodPost, "/v1/subjects/:id/attributes", api.addSubjectAttributeHandler)
 
 	router.HandlerFunc(http.MethodPost, "/v1/authenticate", api.authenticateHandler)
 

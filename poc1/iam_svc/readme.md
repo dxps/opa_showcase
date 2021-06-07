@@ -6,7 +6,9 @@ This is the Identity and Access Management (IAM) service, playing the authentica
 
 ### Prereqs
 
-- [migrate](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate) tool for running the SQL migrations
+Have [migrate](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate) tool installed for running the database migrations.
+
+Run the database migrations using `./run_migrate.sh 3` before starting the app. This `3` is the latest version. Check out `ops/db_migrations/` directory for the latest version number that exists.
 
 <br/>
 
@@ -27,6 +29,7 @@ For this, make sure you have `reflex` tool installed:
 
 - Register a subject using:<br/>
   `curl -i -d '{ "name":"John", "email":"john@doe.com", "password":"pass1234" }' localhost:3001/v1/subjects`
+
 - Authenticate a subject using:<br/>
   `curl -i -d '{ "email":"john@doe.com", "password":"pass1234" }' localhost:3001/v1/authenticate`<br/>
   Example:
@@ -44,3 +47,6 @@ For this, make sure you have `reflex` tool installed:
   ```
 
   The result of a successful authentication is a JWT token.
+
+- Add an attribute to a subject using:<br/>
+  ``
