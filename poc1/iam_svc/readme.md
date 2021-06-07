@@ -73,3 +73,19 @@ For this, make sure you have `reflex` tool installed:
 
   $
   ```
+
+- Get the attributes of a subject using:<br/>
+  `curl localhost:3001/v1/subjects/93efdaad-aa47-4bd9-8e71-55b3030fe02d/attributes`<br/>
+  Example:
+
+  ```shell
+  $ curl -i localhost:3001/v1/subjects/93efdaad-aa47-4bd9-8e71-55b3030fe02d/attributes
+  HTTP/1.1 200 OK
+  Content-Type: application/json
+  Date: Mon, 07 Jun 2021 17:00:31 GMT
+  Content-Length: 40
+
+  [{"name":"jobRole","value":"SomeRole"}]
+
+  $
+  ```

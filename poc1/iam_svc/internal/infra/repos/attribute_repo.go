@@ -32,6 +32,38 @@ func (ar AttributeRepo) Add(attr domain.Attribute) error {
 	return nil
 }
 
+func (ar AttributeRepo) GetAllAttributesBySubjectID(id int64) ([]*domain.Attribute, error) {
+
+	query := `
+		SELECT name, value FROM attributes 
+		WHERE owner_id=$1
+	`
+	args := []interface{}{id}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	rows, err := ar.DB.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	attrs := []*domain.Attribute{}
+
+	for rows.Next() {
+		var attr domain.Attribute
+		err := rows.Scan(&attr.Name, &attr.Value)
+		if err != nil {
+			return nil, err
+		}
+		attrs = append(attrs, &attr)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return attrs, nil
+}
+
 func (ar AttributeRepo) GetAllAttributesBySubjectEID(eid string) ([]*domain.Attribute, error) {
 
 	query := `

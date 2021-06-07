@@ -13,11 +13,17 @@ func (api *API) getSubjectAttributesHandler(w http.ResponseWriter, r *http.Reque
 	eid, err := api.readUUIDParam(r)
 	if err != nil {
 		api.logger.Print("getSubjectAttributesHandler > readUUIDParam (id) error: ", err)
-		api.serverErrorResponse(w, r, app.ErrSubjectEIDInvalid)
+		api.badRequestResponse(w, r, app.ErrSubjectEIDInvalid)
 		return
 	}
 
-	attrs, err := api.repos.Attributes.GetAllAttributesBySubjectEID(eid.String())
+	id, err := api.repos.Subjects.GetSubjectIDByEID(eid.String())
+	if err != nil {
+		api.notFoundResponse(w, r)
+		return
+	}
+
+	attrs, err := api.repos.Attributes.GetAllAttributesBySubjectID(*id)
 	if err != nil {
 		api.serverErrorResponse(w, r, err)
 		return
