@@ -28,7 +28,20 @@ For this, make sure you have `reflex` tool installed:
 ### Usage
 
 - Register a subject using:<br/>
-  `curl -i -d '{ "name":"John", "email":"john@doe.com", "password":"pass1234" }' localhost:3001/v1/subjects`
+  `curl -i -d '{ "name":"John", "email":"john@doe.com", "password":"pass1234" }' localhost:3001/v1/subjects`<br/>>
+  Example:
+
+  ```shell
+  $ curl -i -d '{ "name":"John", "email":"john@doe.com", "password":"pass1234" }' localhost:3001/v1/subjects
+  HTTP/1.1 201 Created
+  Content-Type: application/json
+  Date: Mon, 07 Jun 2021 16:50:23 GMT
+  Content-Length: 133
+
+  {"id":"9f83a904-152a-4a5a-8c4e-6cf78dfbb399","created_at":"2021-06-07T16:50:24Z","name":"John","email":"john@doe.com","active":true}
+
+  $
+  ```
 
 - Authenticate a subject using:<br/>
   `curl -i -d '{ "email":"john@doe.com", "password":"pass1234" }' localhost:3001/v1/authenticate`<br/>
@@ -49,4 +62,14 @@ For this, make sure you have `reflex` tool installed:
   The result of a successful authentication is a JWT token.
 
 - Add an attribute to a subject using:<br/>
-  ``
+  `curl -i -d '{ "name": "jobRole", "value": "SomeRole" }' localhost:3001/v1/subjects/93efdaad-aa47-4bd9-8e71-55b3030fe02d/attributes`<br/>
+  Example:
+
+  ```shell
+  $ curl -i -d '{ "name": "jobRole", "value": "SomeRole" }' localhost:3001/v1/subjects/93efdaad-aa47-4bd9-8e71-55b3030fe02d/attributes
+  HTTP/1.1 201 Created
+  Date: Mon, 07 Jun 2021 16:45:01 GMT
+  Content-Length: 0
+
+  $
+  ```
