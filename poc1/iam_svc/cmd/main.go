@@ -2,11 +2,8 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"time"
 
 	_ "github.com/lib/pq"
 
@@ -22,7 +19,7 @@ func main() {
 
 	var cfg app.Config
 
-	// Defining the CLI flags and their default values, plus parsing the startup call.
+	// CLI Flags definition and parsing.
 	flag.IntVar(&cfg.Port, "port", 3001, "HTTP Listening Port of the API Server")
 	flag.StringVar(&cfg.EnvStage, "env", "DEV", "Environment stage (DEV|QA|PROD)")
 	flag.StringVar(&cfg.Db.DSN, "db-dsn", os.Getenv("DB_DSN"), "PostgreSQL DSN")
@@ -44,17 +41,7 @@ func main() {
 	repos := repos.New(app.DB)
 
 	api := api.NewAPI(cfg, logger, APP_VERSION, repos)
-
-	srv := http.Server{
-		Addr:         fmt.Sprintf(":%d", app.Config.Port),
-		Handler:      api.Routes(),
-		IdleTimeout:  time.Minute,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 30 * time.Second,
-	}
-
-	logger.Printf("Listening for HTTP requests on port %s", srv.Addr)
-	err := srv.ListenAndServe()
+	err := api.Serve()
 	logger.Fatal(err)
 
 }
