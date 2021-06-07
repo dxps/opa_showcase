@@ -19,6 +19,7 @@ type SubjectRepo struct {
 // Add method inserts the subject into the repository, updated with the persistence details
 // that is the internal and external IDs (IID, EID), CreatedAt, and Version.
 func (sr SubjectRepo) Add(subj *domain.Subject) error {
+
 	eid, err := uuid.NewV4()
 	if err != nil {
 		return err
@@ -71,4 +72,27 @@ func (sr SubjectRepo) GetByEmail(email string) (*domain.Subject, error) {
 	}
 
 	return &subj, nil
+}
+
+func (sr SubjectRepo) GetSubjectIDByEID(eid string) (*int64, error) {
+	query := `
+		SELECT iid FROM subjects WHERE eid = $1
+	`
+	var id int64
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	err := sr.DB.QueryRowContext(ctx, query, eid).Scan(&id)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, app.ErrRecordNotFound
+		default:
+			return nil, err
+		}
+	}
+
+	return &id, nil
 }
