@@ -1,10 +1,10 @@
 ## PoC 1: OPA Sidecar in a realistic setup
 
-Here is the setup this PoC aims to showcase.
+Here is the setup this PoC aims to showcase how authorization can be delegated to the OPA, deployed as a sidecar (near the service that uses it).
 
 ```
                             .-------------.              .--------------.
-        .------------------>|     IAM     |              |  POLICY MGMT |
+        .------------------>|   IAM_SVC   |              |  POLICY MGMT |
         | 1. Authenticate   '-------------'              '--------------'
         |                                                        |
         |                                                        |
@@ -13,13 +13,13 @@ Here is the setup this PoC aims to showcase.
  '------------'                                                  | Push
         |                                                        | Policies
         |                                                        |
-        | 2. Get Tasks     .-------------.                       |
-        '----------------->|  TASKS API  |                       |
-                           '-------------'                       |
-                                  |                              |
-                                  | 3. Get AuthZ Decision        |
-                                  |                              |
-                                  |        .-------.             |
-                                  '------->|  OPA  |<------------'
+        | 2. Get Tasks     .---------------.                     |
+        '----------------->| DASHBOARD_SVC |                     |
+                           '---------------'                     |
+                                   |                             |
+                                   |3. Get AuthZ Decision        |
+                                   |                             |
+                                   |       .-------.             |
+                                   '------>|  OPA  |<------------'
                                            '-------'
 ```
