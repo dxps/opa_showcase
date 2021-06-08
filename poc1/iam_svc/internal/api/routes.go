@@ -22,5 +22,7 @@ func (api *API) Routes() *httprouter.Router {
 
 	router.HandlerFunc(http.MethodPost, "/v1/authenticate", api.authenticateHandler)
 
+	router.HandlerFunc(http.MethodGet, "/v1/signing/publickey", api.getSigningPublicKeyHandler)
+
 	return router
 }

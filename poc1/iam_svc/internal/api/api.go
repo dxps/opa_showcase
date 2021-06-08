@@ -1,7 +1,6 @@
 package api
 
 import (
-	"crypto/ecdsa"
 	"fmt"
 	"log"
 	"net/http"
@@ -12,23 +11,17 @@ import (
 )
 
 type API struct {
-	config     app.Config
-	logger     *log.Logger
-	appVersion string
-	repos      repos.Repos
-	signing    signingPair
+	config         app.Config
+	logger         *log.Logger
+	appVersion     string
+	repos          repos.Repos
+	signingKeyPair app.SigningKeyPair
 }
 
-type signingPair struct {
-	privateKey *ecdsa.PrivateKey
-	publicKey  *ecdsa.PublicKey
-}
+func NewAPI(config app.Config, logger *log.Logger, appVersion string, repos repos.Repos, signing app.SigningKeyPair) *API {
 
-func NewAPI(config app.Config, logger *log.Logger, appVersion string, repos repos.Repos) *API {
-
-	privKey, pubKey := generateECDSAKeys()
 	return &API{
-		config, logger, appVersion, repos, signingPair{privKey, pubKey},
+		config, logger, appVersion, repos, signing,
 	}
 }
 

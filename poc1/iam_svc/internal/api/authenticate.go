@@ -63,7 +63,7 @@ func (api *API) authenticateHandler(w http.ResponseWriter, r *http.Request) {
 	claims.Expires = jwt.NewNumericTime(now.Add(1 * time.Hour))
 	claims.Audiences = []string{"anyone"}
 
-	jwtBytes, err := claims.ECDSASign(jwt.ES256, api.signing.privateKey)
+	jwtBytes, err := claims.ECDSASign(jwt.ES256, api.signingKeyPair.PrivateKey)
 	if err != nil {
 		api.serverErrorResponse(w, r, err)
 		return

@@ -31,6 +31,7 @@ func main() {
 	// Logger init: sending the entries to standard output.
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
+	signingKeyPair := app.GenerateECDSAKeys()
 	app := app.New(cfg, logger, APP_VERSION)
 
 	if err := app.Init(); err != nil {
@@ -40,8 +41,7 @@ func main() {
 
 	repos := repos.New(app.DB)
 
-	api := api.NewAPI(cfg, logger, APP_VERSION, repos)
+	api := api.NewAPI(cfg, logger, APP_VERSION, repos, signingKeyPair)
 	err := api.Serve()
 	logger.Fatal(err)
-
 }

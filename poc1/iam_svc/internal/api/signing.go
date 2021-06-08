@@ -1,12 +1,19 @@
 package api
 
 import (
-	"crypto/ecdsa"
-	"crypto/elliptic"
-	"crypto/rand"
+	"encoding/json"
+	"net/http"
 )
 
-func generateECDSAKeys() (*ecdsa.PrivateKey, *ecdsa.PublicKey) {
-	privKey, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	return privKey, &privKey.PublicKey
+func (api *API) getSigningPublicKeyHandler(w http.ResponseWriter, r *http.Request) {
+
+	bytes, err := json.Marshal(api.signingKeyPair.PublicKey)
+	if err != nil {
+		api.serverErrorResponse(w, r, err)
+		return
+	}
+
+	_ = api.writeJSON(w, http.StatusOK, envelope{
+		"signingPublicKey": bytes,
+	}, nil)
 }
