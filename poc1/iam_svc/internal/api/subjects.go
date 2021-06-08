@@ -9,7 +9,7 @@ import (
 	"github.com/dxps/opa_showcase/poc1/iam_svc/internal/validator"
 )
 
-func (api *API) RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
+func (api *API) registerUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	// The expected data from request payload (used here as an anonymous struct).
 	var input struct {

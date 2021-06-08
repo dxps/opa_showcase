@@ -14,9 +14,9 @@ func (api *API) Routes() *httprouter.Router {
 
 	// Registering the handlers per methods and URL patterns.
 
-	router.HandlerFunc(http.MethodGet, "/v1/healthcheck", api.HealthcheckHandler)
+	router.HandlerFunc(http.MethodGet, "/v1/healthcheck", api.healthcheckHandler)
 
-	router.HandlerFunc(http.MethodPost, "/v1/subjects", api.RegisterUserHandler)
+	router.HandlerFunc(http.MethodPost, "/v1/subjects", api.registerUserHandler)
 	router.HandlerFunc(http.MethodGet, "/v1/subjects/:id/attributes", api.getSubjectAttributesHandler)
 	router.HandlerFunc(http.MethodPost, "/v1/subjects/:id/attributes", api.addSubjectAttributeHandler)
 
