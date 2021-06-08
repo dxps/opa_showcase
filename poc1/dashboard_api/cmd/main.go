@@ -1,0 +1,29 @@
+package main
+
+import (
+	"flag"
+	"log"
+	"os"
+
+	"github.com/dxps/opa_showcase/poc1/dashboard_svc/internal/api"
+	"github.com/dxps/opa_showcase/poc1/dashboard_svc/internal/app"
+)
+
+// App version. At build time, it gets a different value.
+const APP_VERSION = "1.0.0-DEV"
+
+func main() {
+
+	var cfg app.Config
+
+	// CLI Flags definition and parsing.
+	flag.IntVar(&cfg.Port, "port", 3002, "HTTP Listening Port of the API Server")
+	flag.Parse()
+
+	// Logger init: sending the entries to standard output.
+	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
+
+	api := api.NewAPI(cfg, logger, APP_VERSION)
+	err := api.Serve()
+	logger.Fatal(err)
+}
