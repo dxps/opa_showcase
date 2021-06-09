@@ -1,0 +1,10 @@
+{
+  "input": {
+    "subject": {
+      "products": ["product_1", "product_2"]
+    },
+    "context": {
+      "product": "product_2"
+    }
+  }
+}
