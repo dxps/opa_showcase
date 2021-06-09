@@ -1,0 +1,10 @@
+{
+  "input": {
+    "subject": {
+      "memberOf": ["product_1:user", "dashboard:support"]
+    },
+    "context": {
+      "group": "dashboard:support"
+    }
+  }
+}
