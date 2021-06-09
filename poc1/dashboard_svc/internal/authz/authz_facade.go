@@ -47,10 +47,17 @@ func (a *AuthzFacade) initPolicies() error {
 			Version:   "202106091735",
 			Rules: []AuthzRule{
 				{
-					Name: "user_has_product",
+					Name: "subject_has_product",
 					Input: AuthzRuleInput{
 						SubjectAttributes: []string{"products"},
-						DataAttributes:    []string{""},
+						ContextAttributes: []string{"product"},
+					},
+				},
+				{
+					Name: "subject_is_support",
+					Input: AuthzRuleInput{
+						SubjectAttributes: []string{"memberOf"},
+						ContextAttributes: []string{"group"},
 					},
 				},
 			},

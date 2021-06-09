@@ -1,10 +1,10 @@
 package authz
 
-// AuthzRuleInput specifies the attributes of `subject` and `data`
+// AuthzRuleInput specifies the attributes of `subject` and `context`
 // that are being used within an `AuthzRule`.
 type AuthzRuleInput struct {
-	SubjectAttributes []string
-	DataAttributes    []string
+	SubjectAttributes []string // The attributes of `subject` part of the query `input`.
+	ContextAttributes []string // The attributes of `context` part of the query `input`.
 }
 
 // AuthzRule represents an authorization rule,
