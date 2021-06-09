@@ -1,15 +1,21 @@
 package authz
 
-// AuthzRuleInput specifies the attributes of `subject` and `context`
-// that are being used within an `AuthzRule`.
-type AuthzRuleInput struct {
+// RuleInputSpec specifies the attributes of `subject` and `context`
+// that are being used within an `AuthzRule` for evaluation.
+type RuleInputSpec struct {
 	SubjectAttributes []string // The attributes of `subject` part of the query `input`.
 	ContextAttributes []string // The attributes of `context` part of the query `input`.
 }
 
-// AuthzRule represents an authorization rule,
+// RuleInputData is the concrete input that is passed to a Rule for evaluating it.
+type RuleInputData struct {
+	SubjectData map[string]string
+	ContextData map[string]string
+}
+
+// Rule represents an authorization rule,
 // whose name is being referred when setting up the PEPs.
-type AuthzRule struct {
+type Rule struct {
 
 	// The name of the rule, part of a policy, being referred to on PEPs config.
 	// This is being constructed based on the policy name and rule name within the policy.
@@ -19,18 +25,18 @@ type AuthzRule struct {
 	QueryPath string
 
 	// The policy that this rule is part of.
-	Policy *AuthzPolicy
+	Policy *Policy
 
-	Input AuthzRuleInput
+	Input RuleInputSpec
 }
 
-// AuthzPolicy is the core of the PBAC model.
-// It includes one or more rules, and evaluations of such rules
-// render the authorization decisions.
-type AuthzPolicy struct {
+// Policy is the core of the PBAC model.
+// It includes one or more Rules. And evaluations of these rules
+// are used for rendering the authorization decisions.
+type Policy struct {
 	ID        string
 	Name      string
 	QueryPath string
-	Rules     []AuthzRule
+	Rules     []Rule
 	Version   string
 }

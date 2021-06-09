@@ -4,8 +4,8 @@ import "fmt"
 
 type AuthzFacade struct {
 	config   authzFacadeConfig
-	policies []AuthzPolicy // The policies being used.
-	rules    []AuthzRule   // The rules that are being referred to in the PEP places.
+	policies []Policy // The policies being used.
+	rules    []Rule   // The rules that are being referred to in the PEP places.
 }
 
 type authzFacadeConfig struct {
@@ -39,23 +39,31 @@ func NewAuthzFacade(appID string, policiesFetchURL string, subjectAttributesFetc
 func (a *AuthzFacade) initPolicies() error {
 
 	// Simulating the policies fetching and having back the result.
-	policies := []AuthzPolicy{
+	policies := []Policy{
 		{
-			ID:        "123",
-			Name:      "customer_products",
-			QueryPath: "products/policy/",
+			ID:        "001",
+			Name:      "products_enablement",
+			QueryPath: "products_enablement/",
 			Version:   "202106091735",
-			Rules: []AuthzRule{
+			Rules: []Rule{
 				{
 					Name: "subject_has_product",
-					Input: AuthzRuleInput{
+					Input: RuleInputSpec{
 						SubjectAttributes: []string{"products"},
 						ContextAttributes: []string{"product"},
 					},
 				},
+			},
+		},
+		{
+			ID:        "002",
+			Name:      "standard_rbac",
+			QueryPath: "rbac/",
+			Version:   "202106100018",
+			Rules: []Rule{
 				{
 					Name: "subject_is_support",
-					Input: AuthzRuleInput{
+					Input: RuleInputSpec{
 						SubjectAttributes: []string{"memberOf"},
 						ContextAttributes: []string{"group"},
 					},
@@ -70,10 +78,10 @@ func (a *AuthzFacade) initPolicies() error {
 // Initializing the rules, based on the fetched policies.
 func (a *AuthzFacade) initRules() {
 
-	a.rules = make([]AuthzRule, len(a.policies))
+	a.rules = make([]Rule, len(a.policies))
 	for _, p := range a.policies {
 		for r := range p.Rules {
-			ar := AuthzRule{
+			ar := Rule{
 				Name:      fmt.Sprintf(p.Name, ":", r),
 				QueryPath: fmt.Sprintf(p.QueryPath, "/", r),
 				Policy:    &p,
