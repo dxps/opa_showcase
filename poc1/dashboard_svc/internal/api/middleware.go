@@ -9,6 +9,8 @@ import (
 	"github.com/pascaldekloe/jwt"
 )
 
+// processJWT is processing the JWT, if present in the "Authorization" header,
+// and it sets the `domain.Subject` with the ID based on 'sub' JWT claim.
 func (api *API) processJWT(next http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -26,13 +28,13 @@ func (api *API) processJWT(next http.Handler) http.Handler {
 		}
 
 		token := headerParts[1]
-
-		api.logger.Println("[api processJWT] token =", token)
+		// api.logger.Println("[api processJWT] token =", token)
 
 		// Minimal token validation, for now.
 
 		// For now, we won't perform any signing validation
 		// (using jwt.ECDSACheck([]byte(token), publicKey) function).
+
 		claims, err := jwt.ParseWithoutCheck([]byte(token))
 		if err != nil {
 			api.invalidAuthenticationTokenResponse(w, r)
@@ -53,26 +55,28 @@ func (api *API) processJWT(next http.Handler) http.Handler {
 }
 
 // func (api *API) checkAuthorization(code string, next http.HandlerFunc) http.HandlerFunc {
-func (api *API) authorizeOnPolicy(policy string, next http.HandlerFunc) http.HandlerFunc {
+func (api *API) authorizeByRule(ruleName string, next http.HandlerFunc) http.HandlerFunc {
 
 	fn := func(w http.ResponseWriter, r *http.Request) {
 
+		if _, ok := api.authz.Rules[ruleName]; !ok {
+			api.notFoundResponse(w, r)
+			return
+		}
+		subjectID := api.contextGetSubject(r)
+
+		allowed, err := api.authz.QueryDecision(ruleName, subjectID)
+		if err != nil {
+			api.serverErrorResponse(w, r, err)
+			return
+		}
+		if !allowed {
+			api.notPermittedResponse(w, r)
+		}
+
 		subj := api.contextGetSubject(r)
 
-		api.logger.Printf("[api authorizeOnPolicy] %+v", *subj)
-
-		// Handle AuthZ through OPA.
-
-		// permissions, err := app.models.Permissions.GetAllForUser(user.ID)
-		// if err != nil {
-		// 	api.serverErrorResponse(w, r, err)
-		// 	return
-		// }
-
-		// if !permissions.Include(code) {
-		// 	api.notPermittedResponse(w, r)
-		// 	return
-		// }
+		api.logger.Printf("[api authorizeByRule] %+v", *subj)
 
 		next.ServeHTTP(w, r)
 	}

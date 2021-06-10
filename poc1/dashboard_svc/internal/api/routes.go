@@ -16,7 +16,10 @@ func (api *API) Routes() http.Handler {
 
 	router.HandlerFunc(http.MethodGet, "/v1/healthcheck", api.healthcheckHandler)
 
-	router.HandlerFunc(http.MethodGet, "/v1/subjects/:id/portfolio", api.authorizeOnPolicy("tbd", api.getSubjectPortfolio))
+	router.HandlerFunc(http.MethodGet,
+		"/v1/subjects/:id/portfolio",
+		api.authorizeByRule("products_enablement:subject_has_product", api.getSubjectPortfolio),
+	)
 
 	return api.processJWT(router)
 }

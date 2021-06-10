@@ -7,17 +7,19 @@ import (
 	"time"
 
 	"github.com/dxps/opa_showcase/poc1/dashboard_svc/internal/app"
+	"github.com/dxps/opa_showcase/poc1/dashboard_svc/internal/authz"
 )
 
 type API struct {
 	config     app.Config
+	authz      *authz.AuthzFacade
 	logger     *log.Logger
 	appVersion string
 }
 
-func NewAPI(config app.Config, logger *log.Logger, appVersion string) *API {
+func NewAPI(config app.Config, authz *authz.AuthzFacade, logger *log.Logger, appVersion string) *API {
 
-	return &API{config, logger, appVersion}
+	return &API{config, authz, logger, appVersion}
 }
 
 func (api *API) Serve() error {

@@ -40,3 +40,8 @@ func (api *API) invalidAuthenticationTokenResponse(w http.ResponseWriter, r *htt
 	message := "invalid or missing authentication token"
 	api.errorResponse(w, r, http.StatusUnauthorized, message)
 }
+
+func (api *API) notPermittedResponse(w http.ResponseWriter, r *http.Request) {
+	message := "the subject doesn't have the necessary permissions to access the requested resource"
+	api.errorResponse(w, r, http.StatusForbidden, message)
+}

@@ -9,7 +9,7 @@ import (
 
 type contextKey string
 
-const subjectCtxKey = contextKey("user")
+const subjectCtxKey = contextKey("subj")
 
 func (api *API) contextSetSubject(r *http.Request, subj *domain.Subject) *http.Request {
 	ctx := context.WithValue(r.Context(), subjectCtxKey, subj)
@@ -19,7 +19,7 @@ func (api *API) contextSetSubject(r *http.Request, subj *domain.Subject) *http.R
 func (api *API) contextGetSubject(r *http.Request) *domain.Subject {
 	subj, ok := r.Context().Value(subjectCtxKey).(*domain.Subject)
 	if !ok {
-		panic("missing subject value in request context")
+		panic("missing 'subj' value in request context")
 	}
 
 	return subj

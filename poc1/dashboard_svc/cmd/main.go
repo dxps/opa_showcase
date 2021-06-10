@@ -7,10 +7,13 @@ import (
 
 	"github.com/dxps/opa_showcase/poc1/dashboard_svc/internal/api"
 	"github.com/dxps/opa_showcase/poc1/dashboard_svc/internal/app"
+	"github.com/dxps/opa_showcase/poc1/dashboard_svc/internal/authz"
 )
 
-// App version. At build time, it gets a different value.
-const APP_VERSION = "1.0.0-DEV"
+const (
+	APP_NAME    = "dashboard" // The application/service identifier.
+	APP_VERSION = "1.0.0-DEV" // The application/service version. At build time, it gets a different value.
+)
 
 func main() {
 
@@ -23,7 +26,18 @@ func main() {
 	// Logger init: sending the entries to standard output.
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
-	api := api.NewAPI(cfg, logger, APP_VERSION)
-	err := api.Serve()
+	policiesFetchURL := "_"
+	policyAgentURL := "http://localhost:8181"
+	subjectAttributesFetchURL := "_"
+
+	authz, err := authz.NewAuthzFacade(APP_NAME, policiesFetchURL, policyAgentURL, subjectAttributesFetchURL, logger)
+	if err != nil {
+		logger.Println("[main] Startup error, cannot init the Authz:", err)
+		return
+	}
+
+	api := api.NewAPI(cfg, authz, logger, APP_VERSION)
+
+	err = api.Serve()
 	logger.Fatal(err)
 }
