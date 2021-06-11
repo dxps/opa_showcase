@@ -13,9 +13,6 @@ func NewInput() Input {
 	return gabs.New()
 }
 
-// InputContext is the data that is passed as the `input.context` part of a query decision.
-type InputContext map[string]string
-
 // InputSpec specifies the attributes of `subject` and `context`
 // that are being used within a `Rule` when evaluating it.
 type InputSpec struct {

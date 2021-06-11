@@ -52,7 +52,7 @@ func NewAuthzFacade(
 		return nil, err
 	}
 	a.initRules()
-	a.logRules()
+	// a.logRules()
 
 	return &a, nil
 }
@@ -117,7 +117,7 @@ func (a *AuthzFacade) initRules() {
 
 func (a *AuthzFacade) logRules() {
 
-	out := "[AuthzFacade] Loaded rules: [ "
+	out := "[authz.AuthzFacade] Loaded rules: [ "
 	for _, rule := range a.Rules {
 		ruleJson, _ := json.Marshal(rule)
 		out = fmt.Sprintf("%s \n\t %+v, ", out, string(ruleJson))
@@ -137,19 +137,19 @@ func (a *AuthzFacade) QueryDecision(ruleName string, subjectID SubjectID) (bool,
 
 	r, ok := a.Rules[ruleName]
 	if !ok {
-		a.logger.Printf("[QueryDecision] rule named '%s' not found.", ruleName)
+		a.logger.Printf("[authz.QueryDecision] rule named '%s' not found.", ruleName)
 		return false, app.ErrNotFound
 	}
 
 	input, err := a.buildInput(subjectID)
 	if err != nil {
-		a.logger.Println("[QueryDecision] buildInput error:", err)
+		a.logger.Println("[authz.QueryDecision] buildInput error:", err)
 		return false, err
 	}
 
 	res, err := a.queryOPA(r.QueryURL, input)
 	if err != nil {
-		a.logger.Println("[QueryDecision] queryOPA error:", err)
+		a.logger.Println("[authz.QueryDecision] queryOPA error:", err)
 		return false, err
 	}
 	return res.Result, nil
@@ -200,11 +200,8 @@ func (a *AuthzFacade) queryOPA(url string, input Input) (*QueryResult, error) {
 		return nil, app.ErrInternal
 	}
 	inputStr := inputJson.String()
-	a.logger.Println("[queryOPA] inputStr:", inputStr)
+	a.logger.Println("[authz.queryOPA] inputStr:", inputStr)
 
-	// body, _ := json.Marshal(inputStr)
-	// a.logger.Printf("[queryOPA] using body: %s", body)
-	// postBody := bytes.NewBuffer(body)
 	postBody := bytes.NewBuffer([]byte(inputStr))
 	resp, err := http.Post(url, "application/json", postBody)
 	if err != nil {

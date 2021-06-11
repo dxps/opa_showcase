@@ -59,13 +59,10 @@ func (api *API) authorizeByRule(ruleName string, next http.HandlerFunc) http.Han
 
 	fn := func(w http.ResponseWriter, r *http.Request) {
 
-		if _, ok := api.authz.Rules[ruleName]; !ok {
-			api.notFoundResponse(w, r)
-			return
-		}
 		subjectID := api.contextGetSubject(r)
 
 		allowed, err := api.authz.QueryDecision(ruleName, subjectID)
+
 		if err != nil {
 			api.serverErrorResponse(w, r, err)
 			return
@@ -76,7 +73,7 @@ func (api *API) authorizeByRule(ruleName string, next http.HandlerFunc) http.Han
 
 		subj := api.contextGetSubject(r)
 
-		api.logger.Printf("[api authorizeByRule] %+v", *subj)
+		api.logger.Printf("[api.authorizeByRule] %+v", *subj)
 
 		next.ServeHTTP(w, r)
 	}
