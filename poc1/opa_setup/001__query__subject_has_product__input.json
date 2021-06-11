@@ -1,10 +1,10 @@
 {
   "input": {
     "subject": {
-      "products": ["product_1", "product_2"]
+      "products": ["product_1", "dashboard"]
     },
     "context": {
-      "product": "product_2"
+      "product": "dashboard"
     }
   }
 }
