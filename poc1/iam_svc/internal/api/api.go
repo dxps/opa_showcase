@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -16,24 +17,30 @@ type API struct {
 	appVersion     string
 	repos          repos.Repos
 	signingKeyPair app.SigningKeyPair
+	httpServer     *http.Server
 }
 
 func NewAPI(config app.Config, logger *log.Logger, appVersion string, repos repos.Repos, signing app.SigningKeyPair) *API {
 
-	return &API{
-		config, logger, appVersion, repos, signing,
-	}
-}
-
-func (api *API) Serve() error {
-
-	srv := http.Server{
-		Addr:         fmt.Sprintf(":%d", api.config.Port),
+	api := API{config, logger, appVersion, repos, signing, nil}
+	httpSrv := http.Server{
+		Addr:         fmt.Sprintf(":%d", config.Port),
 		Handler:      api.Routes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
-	api.logger.Printf("Listening for HTTP requests on port %s", srv.Addr)
-	return srv.ListenAndServe()
+	api.httpServer = &httpSrv
+	return &api
+}
+
+func (api *API) Serve() error {
+
+	api.logger.Printf("Listening for HTTP requests on port %s", api.httpServer.Addr)
+	return api.httpServer.ListenAndServe()
+}
+
+func (api *API) Shutdown(gracefulCtx context.Context) error {
+
+	return api.httpServer.Shutdown(gracefulCtx)
 }

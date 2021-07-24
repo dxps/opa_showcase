@@ -34,6 +34,7 @@ func (app *App) Init() error {
 func (app *App) Uninit() {
 	app.Logger.Print("Releasing db connections ...")
 	app.DB.Close()
+	app.Logger.Print("Exit now.")
 }
 
 func (app *App) openDB() (*sql.DB, error) {

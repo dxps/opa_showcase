@@ -1,9 +1,14 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"log"
+	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	_ "github.com/lib/pq"
 
@@ -42,6 +47,29 @@ func main() {
 	repos := repos.New(app.DB)
 
 	api := api.NewAPI(cfg, logger, APP_VERSION, repos, signingKeyPair)
-	err := api.Serve()
-	logger.Fatal(err)
+
+	// Note: These are minimal updates to have a graceful shutdown:
+	//       1. Start `api.Serve()` in a separate goroutine.
+	//       2. Get notified to capture relevant OS signals.
+
+	go func() {
+		if err := api.Serve(); err != http.ErrServerClosed {
+			log.Fatalf("Error on HTTP ListenAndServe: %s", err)
+		}
+	}()
+
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGQUIT)
+
+	<-signalChan
+	log.Println("Shutting down ...")
+
+	gracefulCtx, cancelShutdown := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancelShutdown()
+
+	if err := api.Shutdown(gracefulCtx); err != nil {
+		log.Printf("Error on API Shutdown: %s", err)
+		defer os.Exit(1)
+		return
+	}
 }
